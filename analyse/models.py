@@ -11,7 +11,6 @@ import pickle
 
 from django.db import models
 from nltk.corpus import movie_reviews as reviews
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 from analyse.build import build_and_evaluate
 
@@ -59,8 +58,6 @@ class Amazon_Analyse(models.Model):
 
         save_path = path + '/analyse/data/'
 
-        sid = SentimentIntensityAnalyzer()
-
         total_score = []
         data = []
         comments_list = collections.defaultdict(lambda: [])
@@ -74,23 +71,18 @@ class Amazon_Analyse(models.Model):
                     else:
                         emotion = 0
 
-                    score = sid.polarity_scores(comment)['compound']
-
                     spec_comments.append([comment,
                                           ratings[i],
-                                          score,
                                           emotion])
-                    # comments_list[spec].append((score, comment))
                     comments_list[spec].append((emotion, comment))
             comments_list[spec].sort()
 
             if len(spec_comments) > 0:
-                # sentiment_value = sum(1 for i in spec_comments if i[2] > 0) * 1.0 / len(spec_comments)
-                sentiment_value = sum(i[3] for i in spec_comments) * 1.0 / len(spec_comments)
-                sentiment_value = round(sentiment_value, 2) * 10
+                sentiment_value = sum(i[2] for i in spec_comments) * 1.0 / len(spec_comments)
+                sentiment_value = round(sentiment_value, 3) * 10
 
                 total_score.append(sentiment_value)
-                sentiment_value = round(sentiment_value, 2)
+                sentiment_value = round(sentiment_value, 3)
                 print(spec, sentiment_value)
                 data.append((spec, sentiment_value))
 
@@ -131,7 +123,6 @@ class Amazon_Analyse(models.Model):
         specs = [tokenn]
         positive_review = []
         negative_review = []
-        sid = SentimentIntensityAnalyzer()
 
         total_score = []
         data = []
@@ -154,24 +145,19 @@ class Amazon_Analyse(models.Model):
                     else:
                         emotion = 0
 
-                    score = sid.polarity_scores(comment)['compound']
-
                     spec_comments.append([comment,
                                           ratings[i],
-                                          score,
                                           emotion])
 
-                    # comments_list[spec].append((score, comment))
                     comments_list[spec].append((emotion, comment))
             comments_list[spec].sort()
 
             if len(spec_comments) > 0:
-                # sentiment_value = sum(1 for i in spec_comments if i[2] > 0) * 1.0 / len(spec_comments)
-                sentiment_value = sum(i[3] for i in spec_comments) * 1.0 / len(spec_comments)
-                sentiment_value = round(sentiment_value, 2) * 10
+                sentiment_value = sum(i[2] for i in spec_comments) * 1.0 / len(spec_comments)
+                sentiment_value = round(sentiment_value, 3) * 10
 
                 total_score.append(sentiment_value)
-                sentiment_value = round(sentiment_value, 2)
+                sentiment_value = round(sentiment_value, 3)
                 print(spec, sentiment_value)
                 data.append((spec, sentiment_value))
 

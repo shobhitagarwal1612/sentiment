@@ -43,7 +43,8 @@ def analyse_data(request):
 
             print(specs_list)
         except Exception:
-            pass
+            specs_list=[]
+            form=""
 
         return render(request, 'result.html',
                       {'data': data,
