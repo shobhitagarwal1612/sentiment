@@ -72,7 +72,7 @@ def analyse_data(request):
 def analyse_data_list_all(request):
     if request.method == 'GET':
         q = Amazon_Analyse()
-        score, data, comments = q.analyse_class()
+        score, data, comments,sentiment = q.analyse_class()
         return render(request, 'index.html', {'data': data, 'score': score})
 
 

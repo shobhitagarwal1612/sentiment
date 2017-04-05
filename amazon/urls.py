@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^scrape/', include('scrape.urls')),
     url(r'^analyse/', include('analyse.urls')),
     url(r'^home/', include('home.urls')),
+    url(r'^', include('scrape.urls'))
 ]

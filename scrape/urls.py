@@ -20,4 +20,5 @@ from .views import *
 app_name = 'scrape'
 urlpatterns = [
     url(r'^data/', get_data),
+    url(r'^', get_data)
 ]

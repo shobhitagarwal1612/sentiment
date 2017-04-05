@@ -1,19 +1,20 @@
-{% load staticfiles %}
+    {% load staticfiles %}
 <!DOCTYPE html>
 <html>
 <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'analyse/new.css' %}"/>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
     <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js"></script>
-
-    <link rel="stylesheet" type="text/css" href="{% static 'analyse/new.css' %}"/>
-
 </head>
 <body style="background-color: #F9F9F9;">
 <div>
@@ -51,7 +52,7 @@
     </div>
 </div>
 <div style="text-align: center">
-    <h3>Emotion : {{ score }}/10</h3>
+    <h3>Emotion : {{ score }}/10.0</h3>
     <h3>Total reviews parsed : {{ total_reviews }}</h3>
     <h3>Positive reviews : {{ positive_sentiment }}</h3>
     <h3>Negative reviews : {{ negative_sentiment }}</h3>
