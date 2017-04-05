@@ -37,10 +37,14 @@ def analyse_data(request):
         for line in f:
             p.append(re.findall(r'"(.*?)"', line))
         # print p
-        for i in xrange(0, len(p), 2):
-            specs_list.append((p[i][0], p[i + 1][0]))
+        try:
+            for i in xrange(0, len(p), 2):
+                specs_list.append((p[i][0], p[i + 1][0]))
 
-        print(specs_list)
+            print(specs_list)
+        except Exception:
+            pass
+
         return render(request, 'result.html',
                       {'data': data,
                        'comments': json.dumps(comments),

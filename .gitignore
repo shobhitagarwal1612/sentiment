@@ -1,5 +1,6 @@
 # To omit .pyc files
 *.pyc
-
-# Omit .txt files
-*.txt
+.idea/
+amazon/lib/python2.7/site-packages/django/contrib/auth/templates/
+analyse/data/
+sentiment_dictionary.csv
