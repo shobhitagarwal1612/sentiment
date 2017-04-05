@@ -1,11 +1,11 @@
-#cen{
-        border: 1px solid #e9e9e9;
-        background-color: #3b5998;
-        color: white;
-        padding-bottom: 10px;
-      }
-        #radio-home {
-      
+#cen {
+    background-color: #03a9f4;
+    color: white;
+    padding-bottom: 10px;
+}
+
+#radio-home {
+
     width: 33.33333333%;
     border: 1px solid #e9e9e9;
     padding-top: 21px;
@@ -13,41 +13,45 @@
     color: white;
     border-radius: 15px;
 }
-#image{
+
+#image {
     padding-bottom: 100px;
 }
-  
 
-  .comments.positive {
+.comments.positive {
     border: 1px solid #e9e9e9;
     background-color: #BDF5A8;;
     color: black;
     border-radius: 15px;
 }
 
-  .comments.negative {
+.comments.negative {
     border: 1px solid #e9e9e9;
-    background-color: #DE5252 ;
+    background-color: #DE5252;
     color: antiquewhite;
     border-radius: 15px;
     padding-bottom: 25px;
 }
-  .chart{
+
+.chart {
     border: 1px solid #e9e9e9;
-    background-color: white ;
+    background-color: white;
     border-radius: 15px;
-  }
-  table {
+}
+
+table {
     width: 97%;
-    color:black;
+    color: black;
     border-radius: 10px;
 
 }
-h1,h3 {
+
+h1, h3 {
     font-size: 24px;
     padding-left: 21px;
 }
-  .pdTab {
+
+.pdTab {
     margin-left: 7px;
     width: 100%;
     display: none;

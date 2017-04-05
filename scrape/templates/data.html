@@ -29,7 +29,7 @@
 
         </div>
         <!-- NavBar-->
-        <nav class="navbar-default" role="navigation" style="margin-left: 100px; margin-right: 80px">
+        <nav class="navbar-default" role="navigation" style="margin-top:15px;margin-left: 100px; margin-right: 80px">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse"
                         data-target=".navbar-ex1-collapse">
@@ -49,9 +49,6 @@
                                             style="color: #fff; font-size: medium; font-weight: bold">Scrape</a></li>
                     <li class="menuItem"><a href="/analyse/data/"
                                             style="color: #fff; font-size: medium ;font-weight: bold">Reports</a></li>
-                    <li class="menuItem"><a href="/analyse/list-all/"
-                                            style="color: #fff; font-size: medium;font-weight: bold">All Graphs</a>
-                    </li>
                 </ul>
 
             </div>
@@ -59,7 +56,7 @@
 
     </header>
     <div id="content">
-        <h1>Emotion Analysis: comments analysis tool</h1>
+        <h1>Emotion Analysis: Comments Analysis Tool</h1>
         <p>Enter a website below to analyse the comments for the target product</p>
         <form class="search_form" action="/scrape/data/" method="post" id="scrape">
             {% csrf_token %}

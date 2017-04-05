@@ -69,13 +69,6 @@ def analyse_data(request):
                       )
 
 
-def analyse_data_list_all(request):
-    if request.method == 'GET':
-        q = Amazon_Analyse()
-        score, data, comments,sentiment = q.analyse_class()
-        return render(request, 'index.html', {'data': data, 'score': score})
-
-
 def analyse_newspec(request):
     if request.method == 'POST' and request.is_ajax:
         form = ScrapeForm(request.POST)
