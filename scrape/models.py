@@ -26,10 +26,10 @@ class Amazon_Scrape(models.Model):
         # check_output will run the command and store to result
         x = subprocess.call(cmd, universal_newlines=True)
 
-        command = 'Rscript'
-        path2script = path + '/Rscripts/' + 'scrape-data.R'
+        # command = 'Rscript'
+        # path2script = path + '/Rscripts/' + 'scrape-data.R'
 
-        cmd = [command, path2script] + args
-        open('userReviews.txt', 'w').close()
+        # cmd = [command, path2script] + args
+        # open('userReviews.txt', 'w').close()
         # check_output will run the command and store to result
-        x = subprocess.call(cmd, universal_newlines=True)
+        # x = subprocess.call(cmd, universal_newlines=True)
