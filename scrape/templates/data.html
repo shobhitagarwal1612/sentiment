@@ -1,41 +1,29 @@
 {% load staticfiles %}
+
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
-<!-- <ul class="nav nav-pills">
-  <li role="presentation" class="active"><a href="#">Home</a></li>
-  <li role="presentation"><a href="#">Profile</a></li>
-  <li role="presentation"><a href="#">Messages</a></li>
-</ul>
-
-<div class="jumbotron">
-  <h1 class="display-3">Hello, world!</h1>
-  <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
-  <hr class="m-y-2">
-  <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-  <p class="lead">
-    <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-  </p>
-</div> -->
 <div class="panel panel-default">
-                        <div class="panel-heading">
-                            Enter the URL of product to be analysed
-                        </div>
-                        <div class="panel-body">
-                            <div class="row">
-<div class="col-md-offset-3">
-<form class="form-horizontal" action="/scrape/data/" method="post">
-	{% csrf_token %}	
+    <div class="panel-heading">
+        Enter the URL of product to be analysed
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-offset-3">
+                <form class="form-horizontal" action="/scrape/data/" method="post">
+                    {% csrf_token %}
 
-	<div class="form-group">
-		{{form}}
-	</div>
-	<div class="form-group">
-	<button type="submit" class="btn btn-primary col-md-offset-1">Analyse</button>
-	</div>
-</form>
+                    <div class="form-group">
+                        {{ form }}
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary col-md-offset-1">Analyse</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
-</div></div></div>

@@ -2,290 +2,306 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1">
-          <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-          <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-          <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
-          <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script> 
-          <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js" ></script>
-        
-    <link rel="stylesheet" type="text/css" href="{% static 'analyse/new.css' %}" />
-     
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'analyse/new.css' %}"/>
+
 </head>
 <body style="background-color: #F9F9F9;">
 <div>
-<h1>FIXED NAVBAR</h1>
+    <h1>FIXED NAVBAR</h1>
 </div>
-  <nav class="navbar navbar-inverse navbar-fixed-top" id = "cen" >
-  <div class="container">
-  <div class="navbar-header">
-		<center><h1>{{title}}</h1></center>
-    </div>
-    </div>
-    </nav>
-   
-    <br>
+<nav class="navbar navbar-inverse navbar-fixed-top" id="cen">
     <div class="container">
-      <div class="row">
-        <div class="col-md-4" id = "image">
-        
-          <center><img id="product-image" src="" alt="image" style="background-color: #F9F9F9;" /></center>
+        <div class="navbar-header">
+            <div style="text-align: center;"><h1>{{ title }}</h1></div>
+        </div>
+    </div>
+</nav>
+
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4" id="image">
+
+            <div style="text-align: center;"><img id="product-image" src="" alt="image"
+                                                  style="background-color: #F9F9F9;"/></div>
+            <div style="text-align: center;"><h3>{{ score }}/10</h3></div>
+            <div style="text-align: center;"><h3>{{ total_reviews }}</h3></div>
         </div>
         <div class="col-md-8">
-          <table class="table table-bordered">
-        <tbody>       
-          {% for s1,s2 in specs_list %}
-              <tr class="success"><td class="label1"> {{s1}} </td><td class="value">{{s2}}</td></tr>
-                        
-          {% endfor %}
-          </tbody>
-        </table>
-        
+            <table class="table table-bordered">
+                <tbody>
+                {% for s1,s2 in specs_list %}
+                    <tr class="success">
+                        <td class="label1"> {{ s1 }} </td>
+                        <td class="value">{{ s2 }}</td>
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+
         </div>
-        
-      </div>
 
     </div>
-    
-    <br>
-    <div class="col-md-offset-1">
 
-    <form class="form-inline" id ="custom-spec" action="/analyse/newspec/" method="post">
-        {% csrf_token %}  
+</div>
+
+<br>
+<div class="col-md-offset-1">
+
+    <form class="form-inline" id="custom-spec" action="/analyse/newspec/" method="post">
+        {% csrf_token %}
         <div class="form-group">
-          {{form}}
+            {{ form }}
         </div>
         <div class="form-group">
-        <button type="submit"  id="custom-spec-btn" class="btn btn-primary col-md-offset-1">button</button>
+            <button type="submit" id="custom-spec-btn" class="btn btn-primary col-md-offset-1">button</button>
         </div>
         <br>
         <br>
     </form>
-    </div>
-		<div class="container">
-              <div class="row">
-                  <div class="col-md-4" id = 'radio-home' >
-                  
-						{% for spec,sent in data %}
-						<label><input type="radio" name="feature" value={{sent}} id={{spec}}>  {{spec}}</label>
-						<hr>
-						{% endfor %}						
-                  
-                  </div>
-                  <div  class="col-md-8" >
-                  <div class = "chart" >
-                  <div><h1 id ="heading" >Select any item </h1></div>
-                    
-                    <hr>
-					<canvas id="chart" width="500" height="200px"></canvas>
-          </div>
-          <br><br>
-					<div class="comments positive">
-          <h3 id = "pos"></h3>
-          <hr></hr>
-					<ul id="positive-comments">
-					<!-- javascript prints comments here by parsing JSON obj -->
-					</ul>
-					</div>
-          <br>
-					<div class="comments negative">
-          <h3 id ="neg"></h3>
-          <hr></hr>
-          <ul id="negative-comments">
-          <!-- javascript prints comments here by parsing JSON obj -->
-          </ul>
-					</div>
-                  </div>
-              </div>
-          </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4" id='radio-home'>
 
+            {% for spec,sent in data %}
+                <label><input type="radio" name="feature" value={{ sent }} id={{ spec }}> {{ spec }} {{ sent }}</label>
+                <hr>
+            {% endfor %}
+
+        </div>
+        <div class="col-md-8">
+            <div class="chart">
+                <div><h1 id="heading">Select any item </h1></div>
+
+                <hr>
+                <canvas id="chart" width="500" height="200px"></canvas>
+            </div>
+            <br><br>
+            <div class="comments positive">
+                <h3 id="pos"></h3>
+                <hr/>
+                <ul id="positive-comments">
+                    <!-- javascript prints comments here by parsing JSON obj -->
+                </ul>
+            </div>
+            <br>
+            <div class="comments negative">
+                <h3 id="neg"></h3>
+                <hr/>
+                <ul id="negative-comments">
+                    <!-- javascript prints comments here by parsing JSON obj -->
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <script>
 
-//when documnet is completely loaded load this scripts
-$(document).ready(function(){
+    //when documnet is completely loaded load this scripts
+    $(document).ready(function () {
 
-	radioButtonClickListener();
-  displayImage();
-  formSubmitListener();
+        radioButtonClickListener();
+        displayImage();
+        formSubmitListener();
 
-});
+    });
 
-var obj = {{ comments|safe}};
-//global variables
-var myChart;
+    var obj = {{ comments|safe}};
+    //global variables
+    var myChart;
 
-function radioButtonClickListener() {
+    function radioButtonClickListener() {
 
-	$('input[type=radio][name=feature]').change(function() {
+        $('input[type=radio][name=feature]').change(function () {
 
-		var heading = $(this).attr("id");
-		var value = $(this).val();
+            var heading = $(this).attr("id");
+            var value = $(this).val();
 
-		//set chart heading
-		$("#heading").text(heading);
+            //set chart heading
+            $("#heading").text(heading);
 
-		//load chart
-		displayChart(value);
-    displayComments(heading);
-	});
-}
-
-function displayChart(value) {
-
-	//destroy existing chart if any and load new chart
-	if(myChart != null){					
-					
-		myChart.destroy();
-	}	
-
-	//creation of new chart
-	var ctx = $("#chart");
-	myChart = new Chart(ctx, {
-    type: 'doughnut',
-    data : {
-    labels: [
-        "Positive",
-        "Negative"
-    ],
-    datasets: [
-        {
-            data: [value, (10.0 - value).toFixed(1)],
-            backgroundColor: [
-                "#5cd65c",
-                "#ff4d4d"
-            ],
-            hoverBackgroundColor: [
-                "#2eb82e",
-                "#ff1a1a"
-            ]
-        }]
-}
-});
-}
-function displayComments(heading) {
-	
-	
-
-	for (var key in obj) {
-    	if (obj.hasOwnProperty(key)) {
-        if(key == heading)
-        {
-          //console.log(obj[key]);
-        	var comments = obj[key];
-        //where to append lists	
-        $("#pos").text("Positive Comments");
-        $("#neg").text("Negative Comments");
-
-        var positiveComments = $('#positive-comments')
-        positiveComments.html("") ;
-
-        var negativeComments = $('#negative-comments')
-        negativeComments.html("") ;
-
-        //appending loop
-        for(var i = 0 ;i < 5;i++)
-        {
-          var li = $('<li/>')
-          .text(comments[i][1])
-          .appendTo(negativeComments);
-          
-          var index = comments.length - 1 - i;
-          var li = $('<li/>')
-          .text(comments[index][1])
-          .appendTo(positiveComments);
-        }
-		
-  }
+            //load chart
+            displayChart(value);
+            displayComments(heading);
+        });
     }
-}
-}
 
-function displayImage(){
+    function displayChart(value) {
 
-  var image = {{image|safe}};
+        //destroy existing chart if any and load new chart
+        if (myChart != null) {
 
-  $("#product-image").attr("src", image);
-}
+            myChart.destroy();
+        }
+
+        //creation of new chart
+        var ctx = $("#chart");
+
+        var labels = [
+            "Positive",
+            "Negative"
+        ]
+
+        var backgroundColor = [
+            "#5cd65c",
+            "#ff4d4d"
+        ]
+        var hoverBackgroundColor = [
+            "#2eb82e",
+            "#ff1a1a"
+        ]
+        var data = [value, (10.0 - value).toFixed(1)]
+
+        if (value == 0) {
+            data = [10]
+            labels = ["No data"]
+            backgroundColor = ["#78909C"]
+            hoverBackgroundColor = ["#546E7A"]
+        }
+
+        myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        data: data,
+                        backgroundColor: backgroundColor,
+                        hoverBackgroundColor: hoverBackgroundColor
+                    }]
+            }
+        });
+    }
+    function displayComments(heading) {
 
 
+        for (var key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                if (key == heading) {
+                    console.log(obj[key]);
+                    var comments = obj[key];
+                    //where to append lists
+                    $("#pos").text("Positive Comments");
+                    $("#neg").text("Negative Comments");
 
-function formSubmitListener(){
+                    var positiveComments = $('#positive-comments')
+                    positiveComments.html("");
 
-  $("#custom-spec").on("submit", function(e){
+                    var negativeComments = $('#negative-comments')
+                    negativeComments.html("");
 
-    e.preventDefault();
+                    //appending loop
+                    for (var i = 0; i < 5; i++) {
+                        var li = $('<li/>')
+                            .text(comments[i][1])
+                            .appendTo(negativeComments);
 
-      var url = "/analyse/newspec/";
+                        var index = comments.length - 1 - i;
+                        li = $('<li/>')
+                            .text(comments[index][1])
+                            .appendTo(positiveComments);
+                    }
+
+                }
+            }
+        }
+    }
+
+    function displayImage() {
+
+        var image = {{image|safe}};
+
+        $("#product-image").attr("src", image);
+    }
+
+
+    function formSubmitListener() {
+
+        $("#custom-spec").on("submit", function (e) {
+
+            e.preventDefault();
+
+            var url = "/analyse/newspec/";
 
             $.ajax({
-              type : 'POST',
-              url : url,
-              data : new FormData($(this)[0]),
-              /* data : $(this).serialize(), */
-              /* enctype : 'multipart/form-data', */
-              /* encoding : 'multipart/form-data', */
-              cache : false,
-              processData : false,
-              contentType : false,
-              beforeSend: function() {
-                $("#custom-spec-btn").prop('disabled', true);
-              },
-              success : function(response) {
-                response = JSON.parse(response);
-                var heading = response.heading;
-                var comments_spec = response.comments_spec;
-                
-                obj[heading] = comments_spec[heading];
-                
-                var label = document.createElement("label");
-                var radio = document.createElement("input");
-                radio.type = "radio";
-                radio.name = "feature";
-                radio.value = response.value;
-                radio.id = response.heading;
+                type: 'POST',
+                url: url,
+                data: new FormData($(this)[0]),
+                /* data : $(this).serialize(), */
+                /* enctype : 'multipart/form-data', */
+                /* encoding : 'multipart/form-data', */
+                cache: false,
+                processData: false,
+                contentType: false,
+                beforeSend: function () {
+                    $("#custom-spec-btn").prop('disabled', true);
+                },
+                success: function (response) {
+                    response = JSON.parse(response);
+                    var heading = response.heading;
+                    var comments_spec = response.comments_spec;
 
-                label.appendChild(radio);
-                radio_home = document.getElementById("radio-home");
-                text = ' '+ heading;
-                label.appendChild(document.createTextNode(text));
-                radio_home.appendChild(label);
-                $("#heading").text(heading);
-                displayChart(response.value);
-                displayComments(heading)
+                    obj[heading] = comments_spec[heading];
 
-                var hrtag = "<hr/>";
-                $(label).after(hrtag);  
+                    var label = document.createElement("label");
+                    var radio = document.createElement("input");
+                    radio.type = "radio";
+                    radio.name = "feature";
+                    radio.value = response.value;
+                    radio.id = response.heading;
 
-                $("#custom-spec-btn").prop('disabled', false);
-                radioButtonClickListener();
+                    label.appendChild(radio);
+                    radio_home = document.getElementById("radio-home");
+                    text = ' ' + heading;
+                    label.appendChild(document.createTextNode(text));
+                    radio_home.appendChild(label);
+                    $("#heading").text(heading);
+                    displayChart(response.value);
+                    displayComments(heading)
+
+                    var hrtag = "<hr/>";
+                    $(label).after(hrtag);
+
+                    $("#custom-spec-btn").prop('disabled', false);
+                    radioButtonClickListener();
 
 
-              },
-              error : function(XMLHttpRequest,
-                  textStatus, errorThrown) {                
-                /* console.info("Status: " + XMLHttpRequest);
-                alert("Status: " + textStatus);
-                alert("Error: " + errorThrown); */
-                alert("Error occured, try again.")
-                $("#custom-spec-btn").prop('disabled', false);
-              }
+                },
+                error: function (XMLHttpRequest,
+                                 textStatus, errorThrown) {
+                    /* console.info("Status: " + XMLHttpRequest);
+                     alert("Status: " + textStatus);
+                     alert("Error: " + errorThrown); */
+                    alert("Error occured, try again.")
+                    $("#custom-spec-btn").prop('disabled', false);
+                }
             });
 
-  });
-}
+        });
+    }
 </script>
 <style type="text/css">
-  .comments.negative {
-    border: 1px solid #e9e9e9;
-    background-color: #DE5252 ;
-    color: antiquewhite;
-    border-radius: 25px;
-    padding-bottom: 25px;
-}
+    .comments.negative {
+        border: 1px solid #e9e9e9;
+        background-color: #DE5252;
+        color: antiquewhite;
+        border-radius: 25px;
+        padding-bottom: 25px;
+    }
 </style>
 </body>
 </html>

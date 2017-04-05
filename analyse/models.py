@@ -1,141 +1,182 @@
+from __future__ import print_function
+from __future__ import print_function
+from __future__ import print_function
 from __future__ import unicode_literals
-import os 
-from django.db import models
-import math
-import nltk
-import nltk.corpus
-from nltk.text import Text
-import sys
-import collections
-import io
-import os.path
-from nltk.tokenize import sent_tokenize
-from nltk.tokenize import word_tokenize
 
+import collections
+import json
+import os
+import os.path
+import pickle
+
+from django.db import models
+from nltk.corpus import movie_reviews as reviews
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-# Create your models here.
+
+from analyse.build import build_and_evaluate
+
 
 class Amazon_Analyse(models.Model):
-	
-	def analyse_class(self):
-		
-		#start = timeit.default_timer()
-		sid = SentimentIntensityAnalyzer()
-		reload(sys)
-		sys.setdefaultencoding("utf-8")
-		path = os.getcwd()
-		m = Text(nltk.corpus.gutenberg.words(path + '/userReviews.txt'))
+    def analyse_class(self):
 
-		specs = ['camera','performance','battery','look','feel','money','sound','network','storage','software']
+        global emotion
+        X = [reviews.raw(fileid) for fileid in reviews.fileids()]
+        y = [reviews.categories(fileid)[0] for fileid in reviews.fileids()]
 
-		save_path = path + '/analyse/data/'
-				 
-		for spec in specs:
+        filename = 'dump.pkl'
 
-			completeFileName = os.path.join(save_path, spec+".txt")
-			specFile = open(completeFileName, 'w')
-			tmpout = sys.stdout
-			sys.stdout = specFile
-			m.concordance(spec, 50, sys.maxint)
-			specFile.close()
-			sys.stdout = tmpout		
-		
-		file = open('sentimentwords.txt')
+        if os.path.isfile(filename):
+            with open(filename, 'rb') as f:
+                model = pickle.load(f)
+        else:
+            model = build_and_evaluate(X, y, outpath=filename)
 
-		dictionary = collections.defaultdict(lambda : 0)
-		comments =  collections.defaultdict(lambda : [])
-		for token in file:
-			dictionary[token[:-1]] = 1
-		# print dictionary
-		# print sentimentfile
-		data = []
-		for spec in specs :
-			completeFileName = os.path.join(save_path, spec+".txt")
-			specFile  = open(completeFileName, 'r')
-			sent_pol = []
-			for line in specFile:
-				line1 = line[:]
-				line = line.split()
-				# print line
-				line_new=[]
+        # print(show_most_informative_features(model,'this is a nice day',n=50))
+        # print(show_most_informative_features(model,'this is a worst day',n=50))
 
-				for tok in line:
-					if dictionary[tok] :
-						# print tok
-						line_new.append(tok)
-				line =' '.join(line_new)
-				sent_pol.append( sid.polarity_scores(line)['compound'])
-				comments[spec].append((sid.polarity_scores(line)['compound'],line1))
-			comments[spec].sort()
-			print spec
-			sentiment_value = sum(1 for i in sent_pol if i>0)*1.0/len(sent_pol)
-			sentiment_value = round(sentiment_value,2) * 10
-			print sentiment_value
-			data.append((spec,sentiment_value)) 
-			#print sum(i for i in sent_pol )/len(sent_pol)
-			#print sent_pol
-			print
-		
-		return data,comments
+        path = os.getcwd()
 
+        with open('amazon_data.json') as data_file:
+            data = json.load(data_file)
 
-	def Amazon_spec(self,tokenn):
+        comments = [data["reviews"][i]["review_text"] for i in range(len(data["reviews"]))]
+        ratings = [data["reviews"][i]["review_rating"] for i in range(len(data["reviews"]))]
 
-		
-		sid = SentimentIntensityAnalyzer()
-		reload(sys)
-		sys.setdefaultencoding("utf-8")
-		path = os.getcwd()
-		m = Text(nltk.corpus.gutenberg.words(path + '/userReviews.txt'))
+        prediction = model.predict(comments)
 
-		specs = [tokenn]
+        print(prediction)
 
-		save_path = path + '/analyse/data/'
-				 
-		for spec in specs:
+        positive_review = []
+        negative_review = []
 
-			completeFileName = os.path.join(save_path, spec+".txt")
-			specFile = open(completeFileName, 'w')
-			tmpout = sys.stdout
-			sys.stdout = specFile
-			m.concordance(spec, 200, sys.maxint)
-			specFile.close()
-			sys.stdout = tmpout		
-		
-		file = open('sentimentwords.txt')
+        for i, emotion in enumerate(prediction):
+            if emotion == 1:
+                positive_review.append(i)
+            else:
+                negative_review.append(i)
 
-		dictionary = collections.defaultdict(lambda : 0)
-		comments =  collections.defaultdict(lambda : [])
-		for token in file:
-			dictionary[token[:-1]] = 1
-		# print dictionary
-		# print sentimentfile
-		data = []
-		for spec in specs :
-			completeFileName = os.path.join(save_path, spec+".txt")
-			specFile  = open(completeFileName, 'r')
-			sent_pol = []
-			for line in specFile:
-				line1 = line[:]
-				line = line.split()
-				# print line
-				line_new=[]
+        specs = ['camera', 'performance', 'battery', 'look', 'feel', 'money', 'sound', 'network', 'storage', 'software']
 
-				for tok in line:
-					if dictionary[tok] :
-						# print tok
-						line_new.append(tok)
-				line =' '.join(line_new)
-				sent_pol.append( sid.polarity_scores(line)['compound'])
-				comments[spec].append((sid.polarity_scores(line)['compound'],line1))
-			comments[spec].sort()
-			print spec
-			sentiment_value = sum(1 for i in sent_pol if i>0)*1.0/len(sent_pol)
-			sentiment_value = round(sentiment_value,2) * 10
-			print sentiment_value
-			data.append((spec,sentiment_value)) 
-			#print sum(i for i in sent_pol )/len(sent_pol)
-			#print sent_pol
-			print
-		
-		return data[0][1],comments
+        save_path = path + '/analyse/data/'
+
+        sid = SentimentIntensityAnalyzer()
+
+        total_score = []
+        data = []
+        comments_list = collections.defaultdict(lambda: [])
+        for spec in specs:
+            spec_comments = []
+
+            for i, comment in enumerate(comments):
+                if spec in comment.split():
+                    if i in positive_review:
+                        emotion = 1
+                    else:
+                        emotion = 0
+
+                    score = sid.polarity_scores(comment)['compound']
+
+                    spec_comments.append([comment,
+                                          ratings[i],
+                                          score,
+                                          emotion])
+                    # comments_list[spec].append((score, comment))
+                    comments_list[spec].append((emotion, comment))
+            comments_list[spec].sort()
+
+            if len(spec_comments) > 0:
+                # sentiment_value = sum(1 for i in spec_comments if i[2] > 0) * 1.0 / len(spec_comments)
+                sentiment_value = sum(i[3] for i in spec_comments) * 1.0 / len(spec_comments)
+                sentiment_value = round(sentiment_value, 2) * 10
+
+                total_score.append(sentiment_value)
+                sentiment_value = round(sentiment_value, 2)
+                print(spec, sentiment_value)
+                data.append((spec, sentiment_value))
+
+            completeFileName = os.path.join(save_path, spec + ".txt")
+
+            with open(completeFileName, 'wb') as fp:
+                pickle.dump(spec_comments, fp)
+
+        net_score = round(sum(total_score) / len(total_score), 2)
+        print("total score", net_score)
+
+        return len(comments), net_score, data, comments_list
+
+    def Amazon_spec(self, tokenn):
+
+        path = os.getcwd()
+
+        with open('amazon_data.json') as data_file:
+            data = json.load(data_file)
+
+        comments = [data["reviews"][i]["review_text"] for i in range(len(data["reviews"]))]
+        ratings = [data["reviews"][i]["review_rating"] for i in range(len(data["reviews"]))]
+
+        global emotion
+        X = [reviews.raw(fileid) for fileid in reviews.fileids()]
+        y = [reviews.categories(fileid)[0] for fileid in reviews.fileids()]
+
+        filename = 'dump.pkl'
+
+        if os.path.isfile(filename):
+            with open(filename, 'rb') as f:
+                model = pickle.load(f)
+        else:
+            model = build_and_evaluate(X, y, outpath=filename)
+
+        prediction = model.predict(comments)
+
+        specs = [tokenn]
+        positive_review = []
+        negative_review = []
+        sid = SentimentIntensityAnalyzer()
+
+        total_score = []
+        data = []
+        comments_list = collections.defaultdict(lambda: [])
+
+        for i, emotion in enumerate(prediction):
+            if emotion == 1:
+                positive_review.append(i)
+            else:
+                negative_review.append(i)
+
+        save_path = path + '/analyse/data/'
+        for spec in specs:
+            spec_comments = []
+
+            for i, comment in enumerate(comments):
+                if spec in comment.split():
+                    if i in positive_review:
+                        emotion = 1
+                    else:
+                        emotion = 0
+
+                    score = sid.polarity_scores(comment)['compound']
+
+                    spec_comments.append([comment,
+                                          ratings[i],
+                                          score,
+                                          emotion])
+
+                    # comments_list[spec].append((score, comment))
+                    comments_list[spec].append((emotion, comment))
+            comments_list[spec].sort()
+
+            if len(spec_comments) > 0:
+                # sentiment_value = sum(1 for i in spec_comments if i[2] > 0) * 1.0 / len(spec_comments)
+                sentiment_value = sum(i[3] for i in spec_comments) * 1.0 / len(spec_comments)
+                sentiment_value = round(sentiment_value, 2) * 10
+
+                total_score.append(sentiment_value)
+                sentiment_value = round(sentiment_value, 2)
+                print(spec, sentiment_value)
+                data.append((spec, sentiment_value))
+
+            completeFileName = os.path.join(save_path, spec + ".txt")
+
+            with open(completeFileName, 'wb') as fp:
+                pickle.dump(spec_comments, fp)
+        return data[0][1], comments_list
