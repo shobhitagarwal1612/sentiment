@@ -1,8 +1,12 @@
+
 {% load staticfiles %}
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-
+<script
+  src="https://code.jquery.com/jquery-2.2.4.min.js"
+  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+  crossorigin="anonymous"></script>
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
@@ -13,7 +17,7 @@
     <div class="panel-body">
         <div class="row">
             <div class="col-md-offset-3">
-                <form class="form-horizontal" action="/scrape/data/" method="post">
+                <form class="form-horizontal" action="/scrape/data/" method="post" id="scrape">
                     {% csrf_token %}
 
                     <div class="form-group">
@@ -23,7 +27,19 @@
                         <button type="submit" class="btn btn-primary col-md-offset-1">Analyse</button>
                     </div>
                 </form>
+                <img src="{% static "Images/spinner.gif" %}" id="spinner">
             </div>
         </div>
     </div>
 </div>
+
+<script>
+
+    $(document).ready(function(){
+        $("#spinner").hide()
+    });
+
+    $("#scrape").submit(function (event) {
+        $("#spinner").show()
+    });
+</script>
