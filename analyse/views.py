@@ -19,7 +19,7 @@ def analyse_data(request):
     if request.method == 'GET':
         print("analyse : get function")
         q = Amazon_Analyse()
-        total_count, score, data, comments = q.analyse_class()
+        score, data, comments, comments_sentiment = q.analyse_class()
 
         with open('amazon_data.json') as data_file:
             f = json.load(data_file)
@@ -43,8 +43,16 @@ def analyse_data(request):
 
             print(specs_list)
         except Exception:
-            specs_list=[]
-            form=""
+            specs_list = []
+            form = ""
+
+        positive = 0
+        negative = 0
+        for i, emotion in enumerate(comments_sentiment):
+            if emotion == 1:
+                positive += 1
+            else:
+                negative += 1
 
         return render(request, 'result.html',
                       {'data': data,
@@ -53,8 +61,11 @@ def analyse_data(request):
                        'image': base64,
                        'form': form,
                        'specs_list': specs_list,
-                       'total_reviews': total_count,
-                       'score': score}
+                       'total_reviews': positive + negative,
+                       'score': score,
+                       'positive_sentiment': positive,
+                       'negative_sentiment': negative,
+                       }
                       )
 
 

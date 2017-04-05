@@ -18,151 +18,93 @@ from analyse.build import build_and_evaluate
 class Amazon_Analyse(models.Model):
     def analyse_class(self):
 
-        global emotion
-        X = [reviews.raw(fileid) for fileid in reviews.fileids()]
-        y = [reviews.categories(fileid)[0] for fileid in reviews.fileids()]
-
-        filename = 'dump.pkl'
-
-        if os.path.isfile(filename):
-            with open(filename, 'rb') as f:
-                model = pickle.load(f)
-        else:
-            model = build_and_evaluate(X, y, outpath=filename)
-
+        model = self.get_model()
         # print(show_most_informative_features(model,'this is a nice day',n=50))
         # print(show_most_informative_features(model,'this is a worst day',n=50))
-
-        path = os.getcwd()
-
-        with open('amazon_data.json') as data_file:
-            data = json.load(data_file)
-
-        comments = [data["reviews"][i]["review_text"] for i in range(len(data["reviews"]))]
-        ratings = [data["reviews"][i]["review_rating"] for i in range(len(data["reviews"]))]
-
-        prediction = model.predict(comments)
-
-        print(prediction)
-
-        positive_review = []
-        negative_review = []
-
-        for i, emotion in enumerate(prediction):
-            if emotion == 1:
-                positive_review.append(i)
-            else:
-                negative_review.append(i)
+        comments, ratings = self.parse_data()
+        comments_sentiment = model.predict(comments)
+        # print(comments_sentiment)
 
         specs = ['camera', 'performance', 'battery', 'look', 'feel', 'money', 'sound', 'network', 'storage', 'software']
-
-        save_path = path + '/analyse/data/'
 
         total_score = []
         data = []
         comments_list = collections.defaultdict(lambda: [])
-        for spec in specs:
-            spec_comments = []
-
-            for i, comment in enumerate(comments):
-                if spec in comment.split():
-                    if i in positive_review:
-                        emotion = 1
-                    else:
-                        emotion = 0
-
-                    spec_comments.append([comment,
-                                          ratings[i],
-                                          emotion])
-                    comments_list[spec].append((emotion, comment))
-            comments_list[spec].sort()
-
-            if len(spec_comments) > 0:
-                sentiment_value = sum(i[2] for i in spec_comments) * 1.0 / len(spec_comments)
-                sentiment_value = round(sentiment_value, 3) * 10
-
-                total_score.append(sentiment_value)
-                sentiment_value = round(sentiment_value, 3)
-                print(spec, sentiment_value)
-                data.append((spec, sentiment_value))
-
-            completeFileName = os.path.join(save_path, spec + ".txt")
-
-            with open(completeFileName, 'wb') as fp:
-                pickle.dump(spec_comments, fp)
+        self.generate_specification_sentiment(comments, comments_list, comments_sentiment, data, ratings,
+                                              specs, total_score)
 
         net_score = round(sum(total_score) / len(total_score), 2)
         print("total score", net_score)
 
-        return len(comments), net_score, data, comments_list
+        return net_score, data, comments_list, comments_sentiment
 
-    def Amazon_spec(self, tokenn):
-
-        path = os.getcwd()
-
-        with open('amazon_data.json') as data_file:
-            data = json.load(data_file)
-
-        comments = [data["reviews"][i]["review_text"] for i in range(len(data["reviews"]))]
-        ratings = [data["reviews"][i]["review_rating"] for i in range(len(data["reviews"]))]
-
-        global emotion
-        X = [reviews.raw(fileid) for fileid in reviews.fileids()]
-        y = [reviews.categories(fileid)[0] for fileid in reviews.fileids()]
-
+    def get_model(self):
         filename = 'dump.pkl'
-
         if os.path.isfile(filename):
             with open(filename, 'rb') as f:
                 model = pickle.load(f)
         else:
+            X = [reviews.raw(fileid) for fileid in reviews.fileids()]
+            y = [reviews.categories(fileid)[0] for fileid in reviews.fileids()]
             model = build_and_evaluate(X, y, outpath=filename)
 
-        prediction = model.predict(comments)
+        return model
 
-        specs = [tokenn]
-        positive_review = []
-        negative_review = []
+    def generate_specification_sentiment(self, comments, comments_list, comments_sentiment, data, ratings,
+                                         specs, total_score):
 
-        total_score = []
-        data = []
-        comments_list = collections.defaultdict(lambda: [])
-
-        for i, emotion in enumerate(prediction):
-            if emotion == 1:
-                positive_review.append(i)
-            else:
-                negative_review.append(i)
-
-        save_path = path + '/analyse/data/'
+        save_path = os.getcwd() + '/analyse/data/'
+        global emotion
         for spec in specs:
             spec_comments = []
 
             for i, comment in enumerate(comments):
                 if spec in comment.split():
-                    if i in positive_review:
-                        emotion = 1
-                    else:
-                        emotion = 0
+                    emotion = comments_sentiment[i]
 
-                    spec_comments.append([comment,
-                                          ratings[i],
-                                          emotion])
+                    spec_comments.append([comment, ratings[i], emotion])
+                    comments_list[spec].append((emotion, comment))
 
-                    comments_list[spec].append((comment, emotion))
             comments_list[spec].sort()
 
             if len(spec_comments) > 0:
-                sentiment_value = sum(i[2] for i in spec_comments) * 1.0 / len(spec_comments)
-                sentiment_value = round(sentiment_value, 3) * 10
-
-                total_score.append(sentiment_value)
-                sentiment_value = round(sentiment_value, 3)
-                print(spec, sentiment_value)
+                sentiment_value = self.calculate_sentiment(spec, spec_comments, total_score)
                 data.append((spec, sentiment_value))
 
             completeFileName = os.path.join(save_path, spec + ".txt")
 
             with open(completeFileName, 'wb') as fp:
                 pickle.dump(spec_comments, fp)
+
+    def calculate_sentiment(self, spec, spec_comments, total_score):
+        sentiment_value = sum(i[2] for i in spec_comments) * 1.0 / len(spec_comments)
+        sentiment_value = round(sentiment_value, 3) * 10
+        total_score.append(sentiment_value)
+        sentiment_value = round(sentiment_value, 3)
+        print(spec, sentiment_value)
+        return sentiment_value
+
+    def Amazon_spec(self, tokenn):
+
+        comments, ratings = self.parse_data()
+
+        model = self.get_model()
+
+        comments_sentiment = model.predict(comments)
+
+        print(comments_sentiment)
+        specs = [tokenn]
+
+        total_score = []
+        data = []
+        comments_list = collections.defaultdict(lambda: [])
+        self.generate_specification_sentiment(comments, comments_list, comments_sentiment, data, ratings,
+                                              specs, total_score)
         return data[0][1], comments_list
+
+    def parse_data(self):
+        with open('amazon_data.json') as data_file:
+            data = json.load(data_file)
+        comments = [data["reviews"][i]["review_text"] for i in range(len(data["reviews"]))]
+        ratings = [data["reviews"][i]["review_rating"] for i in range(len(data["reviews"]))]
+        return comments, ratings
