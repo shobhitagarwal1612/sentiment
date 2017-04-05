@@ -149,7 +149,7 @@ class Amazon_Analyse(models.Model):
                                           ratings[i],
                                           emotion])
 
-                    comments_list[spec].append((emotion, comment))
+                    comments_list[spec].append((comment, emotion))
             comments_list[spec].sort()
 
             if len(spec_comments) > 0:

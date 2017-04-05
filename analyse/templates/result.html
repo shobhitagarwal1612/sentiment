@@ -120,7 +120,7 @@
 
     });
 
-    var obj = {{ comments|safe}};
+    var obj = {{comments|safe}};
     //global variables
     var myChart;
 
@@ -205,17 +205,19 @@
                     negativeComments.html("");
 
                     //appending loop
-                    for (var i = 0; i < 5; i++) {
-                        var li = $('<li/>')
-                            .text(comments[i][1])
-                            .appendTo(negativeComments);
-
-                        var index = comments.length - 1 - i;
-                        li = $('<li/>')
-                            .text(comments[index][1])
-                            .appendTo(positiveComments);
+                    for (var i = 0; i < comments.length; i++) {
+                        var sentiment = comments[i][0]
+                        if (sentiment === 0) {
+                            $('<li/>')
+                                .text(comments[i])
+                                .appendTo(negativeComments);
+                        }
+                        else if (sentiment === 1) {
+                            $('<li/>')
+                                .text(comments[i])
+                                .appendTo(positiveComments);
+                        }
                     }
-
                 }
             }
         }
