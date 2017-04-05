@@ -68,11 +68,12 @@
 
     <form class="form-inline" id="custom-spec" action="/analyse/newspec/" method="post">
         {% csrf_token %}
+        <label>Enter your own specification</label>
         <div class="form-group">
             {{ form }}
         </div>
         <div class="form-group">
-            <button type="submit" id="custom-spec-btn" class="btn btn-primary col-md-offset-1">button</button>
+            <button type="submit" id="custom-spec-btn" class="btn btn-primary col-md-offset-1">Search</button>
         </div>
         <br>
         <br>
