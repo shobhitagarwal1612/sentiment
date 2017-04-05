@@ -100,7 +100,10 @@ class Amazon_Analyse(models.Model):
         comments_list = collections.defaultdict(lambda: [])
         self.generate_specification_sentiment(comments, comments_list, comments_sentiment, data, ratings,
                                               specs, total_score)
-        return data[0][1], comments_list
+        if len(data) == 0:
+            return [], comments_list
+        else:
+            return data[0][1], comments_list
 
     def parse_data(self):
         with open('amazon_data.json') as data_file:
