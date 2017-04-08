@@ -26,7 +26,7 @@ class Amazon_Analyse(models.Model):
         # print(comments_sentiment)
 
         specs = ['camera', 'performance', 'battery', 'look', 'feel', 'money', 'sound', 'network', 'storage', 'software']
-
+        # specs = []
         total_score = []
         data = []
         comments_list = collections.defaultdict(lambda: [])
@@ -34,6 +34,7 @@ class Amazon_Analyse(models.Model):
                                               specs, total_score)
 
         net_score = round(sum(total_score) / len(total_score), 2)
+        # net_score = 0
         print("total score", net_score)
 
         return net_score, data, comments_list, comments_sentiment

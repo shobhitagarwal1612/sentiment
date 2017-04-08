@@ -32,4 +32,4 @@ class Amazon_Scrape(models.Model):
         cmd = [command, path2script] + args
         open('userReviews.txt', 'w').close()
         # check_output will run the command and store to result
-        x = subprocess.call(cmd, universal_newlines=True)
+        # x = subprocess.call(cmd, universal_newlines=True)

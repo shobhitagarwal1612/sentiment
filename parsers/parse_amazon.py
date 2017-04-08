@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 # Written as part of https://www.scrapehero.com/how-to-scrape-amazon-product-reviews-using-python/
 import json
-from time import sleep
-
 import sys
+from time import sleep
 
 import requests
 from bs4 import BeautifulSoup
@@ -119,7 +118,7 @@ def start_requests(url):
         print('No more pages found')
         stop = True
 
-    if not stop and page_count < 15:
+    if not stop and page_count < 4:
         next_link = base_url + next_link
         start_urls.append(next_link)
     else:
@@ -129,10 +128,22 @@ def start_requests(url):
         f.close()
 
 
+def save_image():
+    response = requests.get(url=url, headers=headers).text
+    soup = BeautifulSoup(response, 'lxml')
+    product_image = soup.select_one('#landingImage')['src']
+    img = str.replace(product_image, "\r", "")
+    img = str.replace(img, "\n", "")
+    img='[1] "' + img + '"'
+    output = open("imageData.txt", "wb")
+    output.write(img)
+    output.close()
+    print ("image saved")
+
+
+save_image()
+
 for url in start_urls:
     start_requests(url)
-
-
-
 
 print ('Parsing complete')
