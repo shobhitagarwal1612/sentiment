@@ -2,5 +2,3 @@
 *.pyc
 .idea/
 amazon/lib/python2.7/site-packages/django/contrib/auth/templates/
-analyse/data/
-sentiment_dictionary.csv
