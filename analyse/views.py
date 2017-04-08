@@ -4,7 +4,6 @@ from __future__ import print_function
 from __future__ import print_function
 
 import json
-import re
 
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -35,11 +34,11 @@ def analyse_data(request):
         p = []
         f = open('specs.txt')
         for line in f:
-            p.append(re.findall(r'"(.*?)"', line))
+            p.append(line)
         # print p
         try:
             for i in xrange(0, len(p), 2):
-                specs_list.append((p[i][0], p[i + 1][0]))
+                specs_list.append((p[i], p[i + 1]))
 
             print(specs_list)
         except Exception:

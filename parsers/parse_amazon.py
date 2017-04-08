@@ -128,7 +128,7 @@ def start_requests(url):
         f.close()
 
 
-def save_image():
+def save_product_details():
     response = requests.get(url=url, headers=headers).text
     soup = BeautifulSoup(response, 'lxml')
     product_image = soup.select_one('#landingImage')['src']
@@ -138,10 +138,17 @@ def save_image():
     output = open("imageData.txt", "wb")
     output.write(img)
     output.close()
-    print ("image saved")
+
+    product_details = soup.select('.col1 td')
+    output = open("specs.txt", "wb")
+    for row in product_details:
+        output.write(row.text+"\n")
+    output.close()
+
+    print ("details saved")
 
 
-save_image()
+save_product_details()
 
 for url in start_urls:
     start_requests(url)
